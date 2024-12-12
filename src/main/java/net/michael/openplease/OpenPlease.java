@@ -15,10 +15,13 @@ import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLConfig;
 import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.fml.loading.FMLServiceProvider;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -38,10 +41,12 @@ public class OpenPlease {
     public static final float DOOR_DISTANCE = 2f; // Distance for door interaction
 
     public OpenPlease() {
-        NeoForge.EVENT_BUS.addListener(this::commonSetup);
-        NeoForge.EVENT_BUS.addListener(this::registerKeyMappings);
+        IEventBus modEventBus = ModLoadingContext.get().getActiveContainer().getEventBus();
+
+        modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::registerKeyMappings);
         NeoForge.EVENT_BUS.register(this);
-        NeoForge.EVENT_BUS.addListener(this::addCreative);
+        modEventBus.addListener(this::addCreative);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -52,7 +57,7 @@ public class OpenPlease {
         // Add items or blocks to creative mode tabs (currently empty)
     }
 
-    @SubscribeEvent
+    // @SubscribeEvent
     public void registerKeyMappings(RegisterKeyMappingsEvent event) {
         toggle = new KeyMapping(
                 "key.openplease.toggle",
